@@ -1,3 +1,12 @@
+/*
+Name: Pranav Shailesh Landge
+Class: SY-A
+Roll_no: 41
+Subject: DCN
+Assignment-09-Write a program using UDP Sockets to enable file transfer (Script, Text,
+Audio and Video one file each) between two machines.
+*/
+
 import java.net.*;
 import java.io.*;
 
