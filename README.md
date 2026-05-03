@@ -12,9 +12,33 @@ This repository contains lab work for networking, data structures, and Java prog
   - Assignment_06_subnetting.cpp
   - Assignment_07_distancevector.cpp
   - Assignment_07_linkstate.cpp
-  - Assignment_10_DNSlookup.cpp
+  - IPDemo.java
+  - tempCodeRunnerFile.java
   - TCP/: Java TCP client/server examples
+    - Calculator/: TCP calculator application
+      - Client.java
+      - Server.java
+    - Chat/: TCP chat application
+      - Client.java
+      - Server.java
+      - MultiChat/: Multi-user chat implementation
+        - JavaClient.java
+        - JavaServer.java
+    - File/: TCP file transfer
+      - Client.java
+      - Server.java
+      - test.txt
+      - received_test.txt
   - UDP/: UDP lab examples
+    - Calculator/: UDP calculator application
+      - Client.java
+      - Server.java
+    - Chat/: UDP chat application
+      - Client.java
+      - Server.java
+    - File/: UDP file transfer
+      - Client.java
+      - Server.java
 
 - DS-LAB: Data Structures lab implementations in C++
   - Assignment_01_sets_with_STL.cpp
