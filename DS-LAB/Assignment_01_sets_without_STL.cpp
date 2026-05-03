@@ -18,99 +18,89 @@ Find out participants who have participated in all events
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-int arr1[]= {10,20,30,40,50};
-int arr2[]= {30,50,60,70,80};
-int choice;
+string coding[50], project[50], paper[50], mastermind[50];
+int nc, np, npp, nm;
 
-do{
-cout<<"-------------MENU--------------"<<endl;
-cout<<"1.Union"<<endl;
-cout<<"2.Intersection"<<endl;
-cout<<"3.Difference"<<endl;
-cout<<"Enter choice : "<<endl;
-cin>>choice;
+bool exists(string arr[], int n, string key) {
+    for (int i = 0; i < n; i++)
+        if (arr[i] == key) return true;
+    return false;
+}
 
-switch(choice){
-	case 1:{
-		int uni[10];
-		int k = 0;
+void input(string arr[], int &n) {
+    cout << "Enter number of students: ";
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+}
 
-                
-    for(int i=0; i<5; i++){
-		uni[k++] = arr1[i];
-	}
+void display(string arr[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+    cout << endl;
+}
 
-    for(int i=0; i<5; i++){
-        bool flag = false;
-        for(int j=0; j<5; j++){
-			if(arr2[i] == arr1[j]){
-              	flag = true;
+int main() {
+
+    cout << "Coding:\n"; input(coding, nc);
+    cout << "Project:\n"; input(project, np);
+    cout << "Paper:\n"; input(paper, npp);
+    cout << "MasterMind:\n"; input(mastermind, nm);
+
+    int choice;
+    do {
+        cout << "\n1. Coding AND Project\n";
+        cout << "2. Coding OR Project OR MasterMind\n";
+        cout << "3. Coding but NOT MasterMind\n";
+        cout << "4. All events\n";
+        cout << "5. Exit\n";
+        cin >> choice;
+
+        string result[100];
+        int k = 0;
+
+        switch (choice) {
+            case 1:
+                for (int i = 0; i < nc; i++)
+                    if (exists(project, np, coding[i]))
+                        result[k++] = coding[i];
+                display(result, k);
                 break;
-               }
-          }
-          if(!flag){
-             uni[k++] = arr2[i];
-          }
-    }
 
-	for(int i=0; i<k; i++){
-		cout<<uni[i]<<" ";
-		}
-	cout<<endl;	
-	break;
-	}
-	
-	case 2:{
-	int inr[5];
-	int m=0;
-	for(int i=0; i<5; i++){
-	bool flag=false;
-        for(int j=0; j<5; j++){
-			if(arr2[i] == arr1[j]){
-              	flag = true;
+            case 2:
+                for (int i = 0; i < nc; i++)
+                    if (!exists(result, k, coding[i]))
+                        result[k++] = coding[i];
+
+                for (int i = 0; i < np; i++)
+                    if (!exists(result, k, project[i]))
+                        result[k++] = project[i];
+
+                for (int i = 0; i < nm; i++)
+                    if (!exists(result, k, mastermind[i]))
+                        result[k++] = mastermind[i];
+
+                display(result, k);
                 break;
-               }
-          }
-          if(flag){
-             inr[m++] = arr2[i];
-          }
-    }
-    for(int i=0; i<m; i++){
-		cout<<inr[i]<<" ";
-		}
-	cout<<endl;}
-    break;
-    case 3:
-   {
-    int diff[10];
-    int s=0;
-    for(int i=0; i<5; i++){
-        bool flag = false;
-        for(int j=0; j<5; j++){
-			if(arr1[i] == arr2[j]){
-              	flag = true;
+
+            case 3:
+                for (int i = 0; i < nc; i++)
+                    if (!exists(mastermind, nm, coding[i]))
+                        result[k++] = coding[i];
+                display(result, k);
                 break;
-               }
-          }
-          if(!flag){
-             diff[s++] = arr1[i];
-          }
-    }
-    for(int i=0; i<s; i++){
-		cout<<diff[i]<<" ";
-		}
-	cout<<endl;	
-    
-    }
-    break;
-    
-    case 4:
-    	cout<<"Exiting"<<endl;
-    	break;
-    default:
-    	cout<<"Invalid input enter again"<<endl;
-	}
-}while(choice != 4);
-return 0;
+
+            case 4:
+                for (int i = 0; i < nc; i++)
+                    if (exists(project, np, coding[i]) &&
+                        exists(paper, npp, coding[i]) &&
+                        exists(mastermind, nm, coding[i]))
+                        result[k++] = coding[i];
+                display(result, k);
+                break;
+        }
+
+    } while (choice != 5);
+
+    return 0;
 }

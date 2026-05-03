@@ -10,139 +10,104 @@ Write C++ program to simulate the system using simple queue or circular
 queue
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-class PizzaParlor
-{
-private:
-  int front, rear;
-  int size;
-  string *queue;
+class PizzaParlor {
+    string queue[50];   
+    int front, rear, size;
 
 public:
-  PizzaParlor(int M)
-  {
-    size = M;
-    queue = new string[size];
-    front = -1;
-    rear = -1;
-  }
-
-  bool isFull()
-  {
-    return (front == (rear + 1) % size);
-  }
-
-  bool isEmpty()
-  {
-    return (front == -1);
-  }
-
-  void placeOrder(string order)
-  {
-    if (isFull())
-    {
-      cout << "Order rejected! Pizza parlor is full.\n";
-      return;
+    PizzaParlor(int M) {
+        size = M;
+        front = -1;
+        rear = -1;
     }
 
-    if (front == -1)
-    {
-      front = rear = 0;
-    }
-    else
-    {
-      rear = (rear + 1) % size;
+    bool isFull() {
+        return (rear == size - 1);
     }
 
-    queue[rear] = order;
-    cout << "Order placed: " << order << endl;
-  }
-
-  void serveOrder()
-  {
-    if (isEmpty())
-    {
-      cout << "No orders to serve.\n";
-      return;
+    bool isEmpty() {
+        return (front == -1 || front > rear);
     }
 
-    cout << "Order served: " << queue[front] << endl;
+    void placeOrder(string order) {
+        if (isFull()) {
+            cout << "Order rejected! Queue is full.\n";
+            return;
+        }
 
-    if (front == rear)
-    {
-      front = rear = -1;
-    }
-    else
-    {
-      front = (front + 1) % size;
-    }
-  }
+        if (front == -1) front = 0;
 
-  void displayOrders()
-  {
-    if (isEmpty())
-    {
-      cout << "No pending orders.\n";
-      return;
+        rear++;
+        queue[rear] = order;
+
+        cout << "Order placed: " << order << endl;
     }
 
-    cout << "Current Orders:\n";
-    int i = front;
+    void serveOrder() {
+        if (isEmpty()) {
+            cout << "No orders to serve.\n";
+            return;
+        }
 
-    while (true)
-    {
-      cout << queue[i] << endl;
-      if (i == rear)
-        break;
-      i = (i + 1) % size;
+        cout << "Order served: " << queue[front] << endl;
+        front++;
     }
-  }
+
+    void displayOrders() {
+        if (isEmpty()) {
+            cout << "No pending orders.\n";
+            return;
+        }
+
+        cout << "Pending Orders:\n";
+        for (int i = front; i <= rear; i++) {
+            cout << queue[i] << endl;
+        }
+    }
 };
 
-int main()
-{
-  int M;
-  cout << "Enter maximum number of orders: ";
-  cin >> M;
+int main() {
+    int M;
+    cout << "Enter maximum number of orders: ";
+    cin >> M;
 
-  PizzaParlor p(M);
+    PizzaParlor p(M);
 
-  int choice;
-  string order;
+    int choice;
+    string order;
 
-  do
-  {
-    cout << "\n1. Place Order\n2. Serve Order\n3. Display Orders\n4. Exit\n";
-    cout << "Enter choice: ";
-    cin >> choice;
+    do {
+        cout << "\n1. Place Order\n2. Serve Order\n3. Display Orders\n4. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
 
-    switch (choice)
-    {
-    case 1:
-      cout << "Enter pizza order: ";
-      cin >> order;
-      p.placeOrder(order);
-      break;
+        switch (choice) {
+            case 1:
+                cout << "Enter pizza order: ";
+                cin >> order;
+                p.placeOrder(order);
+                break;
 
-    case 2:
-      p.serveOrder();
-      break;
+            case 2:
+                p.serveOrder();
+                break;
 
-    case 3:
-      p.displayOrders();
-      break;
+            case 3:
+                p.displayOrders();
+                break;
 
-    case 4:
-      cout << "Exiting...\n";
-      break;
+            case 4:
+                cout << "Exiting...\n";
+                break;
 
-    default:
-      cout << "Invalid choice!\n";
-    }
+            default:
+                cout << "Invalid choice!\n";
+        }
 
-  } while (choice != 4);
+    } while (choice != 4);
 
-  return 0;
+    return 0;
 }

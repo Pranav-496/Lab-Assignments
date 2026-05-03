@@ -20,104 +20,56 @@ C++ program to implement Warnsdorff's rule and show it graphically.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int N = 8;
-int board[N][N];
+int board[50][50];
+int N;
 
-// Possible moves for a knight
-int dx[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
-int dy[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
+int dr[8] = {-2,-1,1,2,2,1,-1,-2};
+int dc[8] = {1,2,2,1,-1,-2,-2,-1};
 
-// Check if (x, y) is inside the board and not visited
-bool isValid(int x, int y) {
-    return (x >= 0 && x < N && y >= 0 && y < N && board[x][y] == -1);
+bool isValid(int r, int c) {
+    return (r >= 0 && c >= 0 && r < N && c < N && board[r][c] == -1);
 }
 
-// Count number of onward moves from position (x, y)
-int countOnwardMoves(int x, int y) {
-    int count = 0;
-    for (int i = 0; i < 8; i++) {
-        int nx = x + dx[i];
-        int ny = y + dy[i];
-        if (isValid(nx, ny))
-            count++;
-    }
-    return count;
-}
+bool solve(int r, int c, int move) {
 
-// Warnsdorff's heuristic: choose next move with minimum onward moves
-bool nextMove(int &x, int &y) {
-    int min_deg_idx = -1, min_deg = 9, c, nx, ny;
+    board[r][c] = move;
 
-    // Store all valid next moves with their onward degrees
-    vector<pair<int, pair<int, int>>> candidates; // {degree, {nx, ny}}
+    if (move == N*N - 1)
+        return true;
 
     for (int i = 0; i < 8; i++) {
-        nx = x + dx[i];
-        ny = y + dy[i];
-        if (isValid(nx, ny)) {
-            c = countOnwardMoves(nx, ny);
-            candidates.push_back({c, {nx, ny}});
+        int nr = r + dr[i];
+        int nc = c + dc[i];
+
+        if (isValid(nr, nc)) {
+            if (solve(nr, nc, move + 1))
+                return true;
         }
     }
 
-    if (candidates.empty()) return false;
-
-    // Sort by number of onward moves (degree)
-    sort(candidates.begin(), candidates.end(), [](auto &a, auto &b) {
-        return a.first < b.first;
-    });
-
-    // Choose the candidate with minimum degree
-    x = candidates[0].second.first;
-    y = candidates[0].second.second;
-
-    return true;
+    board[r][c] = -1;
+    return false;
 }
 
-bool knightTour(int sx, int sy) {
-    // Initialize board with -1 (not visited)
+int main() {
+    cout << "Enter N: ";
+    cin >> N;
+
     for (int i = 0; i < N; i++)
         for (int j = 0; j < N; j++)
             board[i][j] = -1;
 
-    // Start from first position
-    int x = sx, y = sy;
-    board[x][y] = 0; // First move
+    if (solve(0, 0, 0)) {
+        cout << "VALID Knight's Tour\n\n";
 
-    // Make moves from 1 to 63
-    for (int movei = 1; movei < N * N; movei++) {
-        if (!nextMove(x, y)) {
-            return false; // no further moves, tour failed
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                cout << board[i][j] << "\t";
+            }
+            cout << endl;
         }
-        board[x][y] = movei;
-    }
-    return true;
-}
-
-void printBoard() {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            cout << setw(2) << board[i][j] + 1 << " ";
-        }
-        cout << "\n";
-    }
-}
-
-int main() {
-    int start_x, start_y;
-    cout << "Enter starting position (row and column: 0-7): ";
-    cin >> start_x >> start_y;
-
-    if (start_x < 0 || start_x >= N || start_y < 0 || start_y >= N) {
-        cout << "Invalid starting position!\n";
-        return 1;
-    }
-
-    if (knightTour(start_x, start_y)) {
-        cout << "Knight's Tour found:\n";
-        printBoard();
     } else {
-        cout << "No Knight's Tour found from this starting position.\n";
+        cout << "INVALID Knight's Tour\n";
     }
 
     return 0;
