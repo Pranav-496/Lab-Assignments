@@ -17,206 +17,201 @@ time for visit slots. Write functions for
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-  int start, end;
-  bool booked;
-  Node *next;
+struct Node {
+    int start, end;
+    bool booked;
+    Node *next;
 };
 
 Node *head = NULL;
 
-void insert(int s, int e)
-{
-  Node *temp = new Node{s, e, false, NULL};
+// Insert node at end
+void insert(int s, int e) {
+    Node *temp = new Node{s, e, false, NULL};
 
-  if (!head)
-  {
-    head = temp;
-    return;
-  }
-
-  Node *t = head;
-  while (t->next)
-    t = t->next;
-  t->next = temp;
-}
-
-void displayFree()
-{
-  Node *t = head;
-  while (t)
-  {
-    if (!t->booked)
-      cout << t->start << "-" << t->end << endl;
-    t = t->next;
-  }
-}
-
-void book(int s, int e)
-{
-  Node *t = head;
-  while (t)
-  {
-    if (t->start == s && t->end == e)
-    {
-      if (!t->booked)
-      {
-        t->booked = true;
-        cout << "Booked\n";
+    if (!head) {
+        head = temp;
         return;
-      }
-      else
-      {
-        cout << "Already booked\n";
-        return;
-      }
     }
-    t = t->next;
-  }
-  cout << "Invalid slot\n";
+
+    Node *t = head;
+    while (t->next) t = t->next;
+    t->next = temp;
 }
 
-void cancel(int s, int e)
-{
-  Node *t = head;
-  while (t)
-  {
-    if (t->start == s && t->end == e)
-    {
-      if (t->booked)
-      {
-        t->booked = false;
-        cout << "Cancelled\n";
-        return;
-      }
-      else
-      {
-        cout << "Not booked\n";
-        return;
-      }
+// Display free slots
+void displayFree() {
+    cout << "\nFree Slots:\n";
+    Node *t = head;
+    while (t) {
+        if (!t->booked)
+            cout << t->start << "-" << t->end << endl;
+        t = t->next;
     }
-    t = t->next;
-  }
-  cout << "Invalid slot\n";
 }
 
-// Bubble sort using pointer manipulation
-void sortList()
-{
-  if (!head)
-    return;
-
-  bool swapped;
-  Node *ptr1;
-  Node *lptr = NULL;
-
-  do
-  {
-    swapped = false;
-    ptr1 = head;
-
-    while (ptr1->next != lptr)
-    {
-      if (ptr1->start > ptr1->next->start)
-      {
-        swap(ptr1->start, ptr1->next->start);
-        swap(ptr1->end, ptr1->next->end);
-        swap(ptr1->booked, ptr1->next->booked);
-        swapped = true;
-      }
-      ptr1 = ptr1->next;
+// Book slot
+void book(int s, int e) {
+    Node *t = head;
+    while (t) {
+        if (t->start == s && t->end == e) {
+            if (!t->booked) {
+                t->booked = true;
+                cout << "Appointment Booked\n";
+            } else {
+                cout << "Already Booked\n";
+            }
+            return;
+        }
+        t = t->next;
     }
-    lptr = ptr1;
-  } while (swapped);
+    cout << "Invalid Slot\n";
 }
 
-// TRUE pointer manipulation (no data swap)
-Node *sortByPointer(Node *head)
-{
-  if (!head || !head->next)
-    return head;
-
-  Node *sorted = NULL;
-
-  while (head)
-  {
-    Node *curr = head;
-    head = head->next;
-
-    if (!sorted || curr->start < sorted->start)
-    {
-      curr->next = sorted;
-      sorted = curr;
+// Cancel slot
+void cancel(int s, int e) {
+    Node *t = head;
+    while (t) {
+        if (t->start == s && t->end == e) {
+            if (t->booked) {
+                t->booked = false;
+                cout << "Appointment Cancelled\n";
+            } else {
+                cout << "Slot not booked\n";
+            }
+            return;
+        }
+        t = t->next;
     }
-    else
-    {
-      Node *temp = sorted;
-      while (temp->next && temp->next->start < curr->start)
-        temp = temp->next;
-
-      curr->next = temp->next;
-      temp->next = curr;
-    }
-  }
-  return sorted;
+    cout << "Invalid Slot\n";
 }
 
-void displayAll()
-{
-  Node *t = head;
-  while (t)
-  {
-    cout << t->start << "-" << t->end << " ";
-    if (t->booked)
-      cout << "Booked\n";
-    else
-      cout << "Free\n";
-    t = t->next;
-  }
+// Sort using data swap
+void sortData() {
+    if (!head) return;
+
+    bool swapped;
+    Node *ptr;
+    Node *last = NULL;
+
+    do {
+        swapped = false;
+        ptr = head;
+
+        while (ptr->next != last) {
+            if (ptr->start > ptr->next->start) {
+                swap(ptr->start, ptr->next->start);
+                swap(ptr->end, ptr->next->end);
+                swap(ptr->booked, ptr->next->booked);
+                swapped = true;
+            }
+            ptr = ptr->next;
+        }
+        last = ptr;
+    } while (swapped);
+
+    cout << "Sorted using data swapping\n";
 }
 
-int main()
-{
-  int n, s, e, ch;
-  cout << "Enter number of slots: ";
-  cin >> n;
+// Sort using pointer manipulation (insertion sort)
+Node* sortPointer(Node *head) {
+    Node *sorted = NULL;
 
-  for (int i = 0; i < n; i++)
-  {
-    cin >> s >> e;
-    insert(s, e);
-  }
+    while (head) {
+        Node *curr = head;
+        head = head->next;
 
-  do
-  {
-    cout << "\n1.Free\n2.Book\n3.Cancel\n4.Sort(Data Swap)\n5.Sort(Pointer)\n6.Display\n7.Exit\n";
-    cin >> ch;
+        if (!sorted || curr->start < sorted->start) {
+            curr->next = sorted;
+            sorted = curr;
+        } else {
+            Node *t = sorted;
+            while (t->next && t->next->start < curr->start)
+                t = t->next;
 
-    switch (ch)
-    {
-    case 1:
-      displayFree();
-      break;
-    case 2:
-      cin >> s >> e;
-      book(s, e);
-      break;
-    case 3:
-      cin >> s >> e;
-      cancel(s, e);
-      break;
-    case 4:
-      sortList();
-      break;
-    case 5:
-      head = sortByPointer(head);
-      break;
-    case 6:
-      displayAll();
-      break;
+            curr->next = t->next;
+            t->next = curr;
+        }
     }
-  } while (ch != 7);
+    return sorted;
+}
 
-  return 0;
+// Display all
+void displayAll() {
+    cout << "\nAll Slots:\n";
+    Node *t = head;
+    while (t) {
+        cout << t->start << "-" << t->end << " : ";
+        if (t->booked) cout << "Booked\n";
+        else cout << "Free\n";
+        t = t->next;
+    }
+}
+
+int main() {
+    int n, s, e, ch;
+
+    cout << "Enter number of appointment slots: ";
+    cin >> n;
+
+    for (int i = 0; i < n; i++) {
+        cout << "Enter start and end time for slot " << i + 1 << ": ";
+        cin >> s >> e;
+        insert(s, e);
+    }
+
+    do {
+        cout << "\n===== MENU =====\n";
+        cout << "1. Display Free Slots\n";
+        cout << "2. Book Appointment\n";
+        cout << "3. Cancel Appointment\n";
+        cout << "4. Sort (Data Swap)\n";
+        cout << "5. Sort (Pointer Manipulation)\n";
+        cout << "6. Display All\n";
+        cout << "7. Exit\n";
+
+        cout << "Enter choice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                displayFree();
+                break;
+
+            case 2:
+                cout << "Enter start and end time to BOOK: ";
+                cin >> s >> e;
+                book(s, e);
+                break;
+
+            case 3:
+                cout << "Enter start and end time to CANCEL: ";
+                cin >> s >> e;
+                cancel(s, e);
+                break;
+
+            case 4:
+                sortData();
+                break;
+
+            case 5:
+                head = sortPointer(head);
+                cout << "Sorted using pointer manipulation\n";
+                break;
+
+            case 6:
+                displayAll();
+                break;
+
+            case 7:
+                cout << "Exiting...\n";
+                break;
+
+            default:
+                cout << "Invalid choice!\n";
+        }
+
+    } while (ch != 7);
+
+    return 0;
 }
