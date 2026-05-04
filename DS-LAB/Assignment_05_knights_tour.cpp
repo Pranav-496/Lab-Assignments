@@ -24,7 +24,7 @@ int board[50][50];
 int N;
 
 int dr[8] = {-2, -2, -1, -1, 1, 1, 2, 2};
-int dc[8] = {-1,  1, -2,  2, -2, 2, -1, 1};
+int dc[8] = {-1, 1, -2, 2, -2, 2, -1, 1};
 
 bool isValid(int r, int c) {
     return (r >= 0 && c >= 0 && r < N && c < N && board[r][c] == -1);
