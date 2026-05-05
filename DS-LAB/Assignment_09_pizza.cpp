@@ -14,7 +14,7 @@ queue
 using namespace std;
 
 class PizzaParlor {
-    string queue[50];   
+    string queue[50];
     int front, rear, size;
 
 public:
@@ -25,11 +25,11 @@ public:
     }
 
     bool isFull() {
-        return (rear == size - 1);
+        return (front == (rear + 1) % size);
     }
 
     bool isEmpty() {
-        return (front == -1 || front > rear);
+        return (front == -1);
     }
 
     void placeOrder(string order) {
@@ -38,11 +38,13 @@ public:
             return;
         }
 
-        if (front == -1) front = 0;
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % size;
+        }
 
-        rear++;
         queue[rear] = order;
-
         cout << "Order placed: " << order << endl;
     }
 
@@ -53,7 +55,12 @@ public:
         }
 
         cout << "Order served: " << queue[front] << endl;
-        front++;
+
+        if (front == rear) {
+            front = rear = -1;
+        } else {
+            front = (front + 1) % size;
+        }
     }
 
     void displayOrders() {
@@ -63,8 +70,12 @@ public:
         }
 
         cout << "Pending Orders:\n";
-        for (int i = front; i <= rear; i++) {
+
+        int i = front;
+        while (true) {
             cout << queue[i] << endl;
+            if (i == rear) break;
+            i = (i + 1) % size;
         }
     }
 };

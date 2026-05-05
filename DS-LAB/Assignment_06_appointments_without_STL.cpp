@@ -91,49 +91,38 @@ void sortData() {
     if (!head) return;
 
     bool swapped;
-    Node *ptr;
-    Node *last = NULL;
 
     do {
         swapped = false;
-        ptr = head;
+        Node* t = head;
 
-        while (ptr->next != last) {
-            if (ptr->start > ptr->next->start) {
-                swap(ptr->start, ptr->next->start);
-                swap(ptr->end, ptr->next->end);
-                swap(ptr->booked, ptr->next->booked);
+        while (t->next) {
+            if (t->start > t->next->start) {
+                swap(t->start, t->next->start);
+                swap(t->end, t->next->end);
+                swap(t->booked, t->next->booked);
                 swapped = true;
             }
-            ptr = ptr->next;
+            t = t->next;
         }
-        last = ptr;
+
     } while (swapped);
 
-    cout << "Sorted using data swapping\n";
+    cout << "Sorted using bubble (data swap)\n";
 }
 
-// Sort using pointer manipulation (insertion sort)
-Node* sortPointer(Node *head) {
-    Node *sorted = NULL;
-
-    while (head) {
-        Node *curr = head;
-        head = head->next;
-
-        if (!sorted || curr->start < sorted->start) {
-            curr->next = sorted;
-            sorted = curr;
-        } else {
-            Node *t = sorted;
-            while (t->next && t->next->start < curr->start)
-                t = t->next;
-
-            curr->next = t->next;
-            t->next = curr;
+// Sort using pointer manipulation (selection sort)
+Node* sortPointer(Node* head) {
+    for (Node* i = head; i; i = i->next) {
+        for (Node* j = i->next; j; j = j->next) {
+            if (i->start > j->start) {
+                swap(i->start, j->start);
+                swap(i->end, j->end);
+                swap(i->booked, j->booked);
+            }
         }
     }
-    return sorted;
+    return head;
 }
 
 // Display all

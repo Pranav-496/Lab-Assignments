@@ -29,7 +29,7 @@ and security of the data
 */
 
 
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
 struct Data {
@@ -38,30 +38,32 @@ struct Data {
     float pollution;
 };
 
-vector<Data> records;
+Data records[100];
+int n;
 
-void inputData(int n) {
-    Data d;
+// input
+void inputData() {
     for (int i = 0; i < n; i++) {
-        cin >> d.temperature >> d.humidity >> d.pollution;
-        records.push_back(d);
+        cout << "Enter temp, humidity, pollution: ";
+        cin >> records[i].temperature >> records[i].humidity >> records[i].pollution;
     }
 }
 
+// min max
 void findMinMax() {
     float minT = records[0].temperature, maxT = records[0].temperature;
     float minH = records[0].humidity, maxH = records[0].humidity;
     float minP = records[0].pollution, maxP = records[0].pollution;
 
-    for (auto &d : records) {
-        minT = min(minT, d.temperature);
-        maxT = max(maxT, d.temperature);
+    for (int i = 0; i < n; i++) {
+        if (records[i].temperature < minT) minT = records[i].temperature;
+        if (records[i].temperature > maxT) maxT = records[i].temperature;
 
-        minH = min(minH, d.humidity);
-        maxH = max(maxH, d.humidity);
+        if (records[i].humidity < minH) minH = records[i].humidity;
+        if (records[i].humidity > maxH) maxH = records[i].humidity;
 
-        minP = min(minP, d.pollution);
-        maxP = max(maxP, d.pollution);
+        if (records[i].pollution < minP) minP = records[i].pollution;
+        if (records[i].pollution > maxP) maxP = records[i].pollution;
     }
 
     cout << "Temperature Min: " << minT << " Max: " << maxT << endl;
@@ -69,92 +71,106 @@ void findMinMax() {
     cout << "Pollution Min: " << minP << " Max: " << maxP << endl;
 }
 
+// average
 void averageValues() {
     float sumT = 0, sumH = 0, sumP = 0;
 
-    for (auto &d : records) {
-        sumT += d.temperature;
-        sumH += d.humidity;
-        sumP += d.pollution;
+    for (int i = 0; i < n; i++) {
+        sumT += records[i].temperature;
+        sumH += records[i].humidity;
+        sumP += records[i].pollution;
     }
-
-    int n = records.size();
 
     cout << "Avg Temperature: " << sumT / n << endl;
     cout << "Avg Humidity: " << sumH / n << endl;
     cout << "Avg Pollution: " << sumP / n << endl;
 }
 
+// sort by pollution (bubble sort)
 void sortByPollution() {
-    sort(records.begin(), records.end(), [](Data a, Data b) {
-        return a.pollution < b.pollution;
-    });
-
-    cout << "Sorted by Pollution:\n";
-    for (auto &d : records) {
-        cout << d.temperature << " " << d.humidity << " " << d.pollution << endl;
-    }
-}
-
-void safeRangeCheck() {
-    float safeMin = 0, safeMax = 50; 
-
-    float lowest = 1e9, highest = -1e9;
-
-    for (auto &d : records) {
-        if (d.pollution >= safeMin && d.pollution <= safeMax) {
-            lowest = min(lowest, d.pollution);
-            highest = max(highest, d.pollution);
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (records[j].pollution > records[j + 1].pollution) {
+                swap(records[j],records[j+1]);
+            }
         }
     }
 
-    if (lowest == 1e9)
-        cout << "No safe values found\n";
-    else
-        cout << "Safe Pollution Range Found: " << lowest << " to " << highest << endl;
+    cout << "Sorted by Pollution:\n";
+    for (int i = 0; i < n; i++) {
+        cout << records[i].temperature << " "
+             << records[i].humidity << " "
+             << records[i].pollution << endl;
+    }
 }
 
+// safe range
+void safeRangeCheck() {
+    float safeMin = 0, safeMax = 50;
+
+    float lowest = 999999, highest = -999999;
+
+    for (int i = 0; i < n; i++) {
+        float p = records[i].pollution;
+
+        if (p >= safeMin && p <= safeMax) {
+            if (p < lowest) lowest = p;
+            if (p > highest) highest = p;
+        }
+    }
+
+    if (lowest == 999999)
+        cout << "No safe values found\n";
+    else
+        cout << "Safe Pollution Range: " << lowest << " to " << highest << endl;
+}
+
+// environmental impact
 void environmentalImpact() {
-    for (auto &d : records) {
-        if (d.pollution > 100)
-            cout << "High Environmental Risk\n";
-        else if (d.pollution > 50)
+    for (int i = 0; i < n; i++) {
+        if (records[i].pollution > 100)
+            cout << "High Risk\n";
+        else if (records[i].pollution > 50)
             cout << "Moderate Risk\n";
         else
             cout << "Low Risk\n";
     }
 }
 
+// health impact
 void healthImpact() {
-    for (auto &d : records) {
-        if (d.pollution > 100)
-            cout << "Severe health hazard\n";
-        else if (d.pollution > 70)
-            cout << "Respiratory issues possible\n";
+    for (int i = 0; i < n; i++) {
+        if (records[i].pollution > 100)
+            cout << "Severe Hazard\n";
+        else if (records[i].pollution > 70)
+            cout << "Respiratory Issues\n";
         else
-            cout << "Safe for general population\n";
+            cout << "Safe\n";
     }
 }
 
 int main() {
-    int n, choice;
+    int choice;
+
     cout << "Enter number of records: ";
     cin >> n;
 
-    inputData(n);
+    inputData();
 
     do {
-        cout << "\n1.Min-Max\n2.Average\n3.Sort(Pollution)\n4.Safe Range\n5.Env Impact\n6.Health Impact\n7.Exit\n";
+        cout << "\n1.Min-Max\n2.Average\n3.Sort\n4.Safe Range\n5.Env Impact\n6.Health Impact\n7.Exit\n";
+        cout << "Enter choice: ";
         cin >> choice;
 
         switch (choice) {
-        case 1: findMinMax(); break;
-        case 2: averageValues(); break;
-        case 3: sortByPollution(); break;
-        case 4: safeRangeCheck(); break;
-        case 5: environmentalImpact(); break;
-        case 6: healthImpact(); break;
+            case 1: findMinMax(); break;
+            case 2: averageValues(); break;
+            case 3: sortByPollution(); break;
+            case 4: safeRangeCheck(); break;
+            case 5: environmentalImpact(); break;
+            case 6: healthImpact(); break;
         }
+
     } while (choice != 7);
 
     return 0;
